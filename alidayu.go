@@ -10,8 +10,6 @@ import (
 // InitAlidayu 初始化服务
 // key:        alidayu账号分配给应用的AppKey
 // secret:     alidayu账号分配给应用的AppSecret
-// cast:       github.com/xiaojiaoyu100/cast中的cast
-// blackList:  alidayu禁止发送的短信模板黑名单
 func InitAlidayu(key, secret string) error {
 	appKey = key
 	appSecret = secret
