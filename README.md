@@ -16,7 +16,6 @@ get your sms param:
 ## 3.example
 
 ```golang
-
 package alidayutest
 
 import (
@@ -81,5 +80,4 @@ func TestSendMessageInObj(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
 ```
