@@ -1,7 +1,6 @@
 package alidayu
 
 import (
-	"fmt"
 	"testing"
 
 	"alidayu"
@@ -29,7 +28,7 @@ func TestNewMessage(t *testing.T) {
 			"code": "fuck",
 			"min":  "5",
 		})
-	fmt.Println(msg)
+	t.Log(msg)
 }
 
 // TestSendMessageInMap 测试使用Map发送单条短信
@@ -41,7 +40,6 @@ func TestSendMessageInMap(t *testing.T) {
 			"code": "fuck",
 			"min":  "5",
 		})
-
 	err := alidayu.SendMessage(msg)
 	if err != nil {
 		t.Fatal(err)
@@ -53,14 +51,12 @@ func TestSendMessageInObj(t *testing.T) {
 	type Content struct {
 		Customer string `json:"customer"`
 	}
-
 	msg, _ := alidayu.NewMessage(testSignName).
 		SetTemplateCode(testTemplateCode).
 		SetTel(testTel).
 		SetContent(Content{
 			Customer: "xie4ever",
 		})
-
 	err := alidayu.SendMessage(msg)
 	if err != nil {
 		t.Fatal(err)
