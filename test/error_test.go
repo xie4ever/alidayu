@@ -1,4 +1,4 @@
-package alidayu
+package alidayutest
 
 import (
 	"testing"

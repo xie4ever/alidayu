@@ -1,4 +1,4 @@
-package alidayu
+package alidayutest
 
 import (
 	"testing"
@@ -16,7 +16,7 @@ const (
 )
 
 func init() {
-	alidayu.InitAlidayu(testKey, testSecret)
+	_ = alidayu.InitAlidayu(testKey, testSecret)
 }
 
 // TestNewMessage 测试短信模板
