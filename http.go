@@ -11,8 +11,6 @@ import (
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/xiaojiaoyu100/cast"
 )
 
 type postResp struct {
@@ -27,17 +25,17 @@ type errorResponse struct {
 	RequestID string `json:"request_id"`
 }
 
-func post(cast *cast.Cast, message *Message) error {
-	body, _, err := getRequestBody(message)
+func (s *Sender) post(message *message) error {
+	body, _, err := s.getRequestBody(message)
 	if err != nil {
 		return getRequestBodyFailed
 	}
 
-	request := cast.NewRequest().
+	request := s.cast.NewRequest().
 		WithCustomBody("application/x-www-form-urlencoded", body).
 		WithTimeout(5 * time.Second).
 		Post()
-	response, err := cast.Do(context.TODO(), request)
+	response, err := s.cast.Do(context.TODO(), request)
 	if err != nil {
 		return castRequestFailed
 	}
@@ -54,7 +52,7 @@ func post(cast *cast.Cast, message *Message) error {
 	return nil
 }
 
-func getRequestBody(message *Message) ([]byte, int64, error) {
+func (s *Sender) getRequestBody(message *message) ([]byte, int64, error) {
 	m, err := structToStringMap(message)
 	if err != nil {
 		return nil, 0, err
@@ -69,7 +67,7 @@ func getRequestBody(message *Message) ([]byte, int64, error) {
 	v := url.Values{}
 	var sign bytes.Buffer
 
-	_, err = sign.WriteString(appSecret)
+	_, err = sign.WriteString(s.appSecret)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -82,7 +80,7 @@ func getRequestBody(message *Message) ([]byte, int64, error) {
 		sign.WriteString(k + m[k])
 	}
 
-	_, err = sign.WriteString(appSecret)
+	_, err = sign.WriteString(s.appSecret)
 	if err != nil {
 		return nil, 0, err
 	}

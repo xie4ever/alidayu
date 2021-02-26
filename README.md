@@ -3,11 +3,11 @@ alidayu-sdk
 
 ## 1.alidayu doc
 
-base on https://help.aliyun.com/product/44282.html?spm=a2c4g.11174283.6.540.72b12c42bQEVrz
+doc: https://help.aliyun.com/product/44282.html?spm=a2c4g.11174283.6.540.72b12c42bQEVrz
 
 ## 2.all you need
 
-get your sms param:
+need param:
 * app key
 * app secret
 * sms sign
@@ -16,8 +16,7 @@ get your sms param:
 ## 3.example
 
 ```golang
-
-package alidayutest
+package test
 
 import (
 	"testing"
@@ -28,19 +27,24 @@ import (
 // API错误码请见https://helpcdn.aliyun.com/document_detail/101346.html
 const (
 	testKey          = "your app key"       // 分配给应用的AppKey
-	testSecret       = "yout test secret"   // 分配给应用的AppSecret
+	testSecret       = "your secret"        // 分配给应用的AppSecret
 	testSignName     = "your sign name"     // 短信签名
 	testTemplateCode = "your template code" // 短信模板ID
 	testTel          = "your telephone"     // 接收手机号码
 )
 
+var s *alidayu.Sender
+
 func init() {
-	_ = alidayu.InitAlidayu(testKey, testSecret)
+	s, _ = alidayu.NewSender(
+		alidayu.WithAppKey(testKey),
+		alidayu.WithAppSecret(testSecret),
+	)
 }
 
 // TestNewMessage 测试短信模板
 func TestNewMessage(t *testing.T) {
-	msg, _ := alidayu.NewMessage(testSignName).
+	msg, _ := s.NewMessage(testSignName).
 		SetTemplateCode(testTemplateCode).
 		SetTel(testTel).
 		SetContent(map[string]string{
@@ -52,15 +56,14 @@ func TestNewMessage(t *testing.T) {
 
 // TestSendMessageInMap 测试使用Map发送单条短信
 func TestSendMessageInMap(t *testing.T) {
-	msg, _ := alidayu.NewMessage(testSignName).
+	msg, _ := s.NewMessage(testSignName).
 		SetTemplateCode(testTemplateCode).
 		SetTel(testTel).
 		SetContent(map[string]string{
 			"code": "fuck",
 			"min":  "5",
 		})
-	err := alidayu.SendMessage(msg)
-	if err != nil {
+	if err := s.Send(msg); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -70,16 +73,14 @@ func TestSendMessageInObj(t *testing.T) {
 	type Content struct {
 		Customer string `json:"customer"`
 	}
-	msg, _ := alidayu.NewMessage(testSignName).
+	msg, _ := s.NewMessage(testSignName).
 		SetTemplateCode(testTemplateCode).
 		SetTel(testTel).
 		SetContent(Content{
 			Customer: "xie4ever",
 		})
-	err := alidayu.SendMessage(msg)
-	if err != nil {
+	if err := s.Send(msg); err != nil {
 		t.Fatal(err)
 	}
 }
-
 ```

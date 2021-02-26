@@ -5,8 +5,7 @@ import (
 	"time"
 )
 
-// Message 短信本体
-type Message struct {
+type message struct {
 	Method     string `json:"method"`
 	AppKey     string `json:"app_key"`
 	Timestamp  string `json:"timestamp"`
@@ -23,11 +22,11 @@ type Message struct {
 }
 
 // NewMessage 新建短信
-// signName:  模板名称，可在短信服务获取
-func NewMessage(signName string) *Message {
-	return &Message{
+// signName: 模板名称，可在短信服务获取
+func (s *Sender) NewMessage(signName string) *message {
+	return &message{
 		Method:       messageMethodSms,
-		AppKey:       appKey,
+		AppKey:       s.appKey,
 		Timestamp:    time.Now().Format("2006-01-02 15:04:05"),
 		Format:       messageFormatJson,
 		Version:      messageVersion,
@@ -38,33 +37,32 @@ func NewMessage(signName string) *Message {
 }
 
 // GetTel 获取短信接收方的电话号码
-func (m *Message) GetTel() string {
+func (m *message) GetTel() string {
 	return m.Tel
 }
 
 // SetTel 设置短信接收方的电话号码，暂不支持批量发送
-// tel:   接收方电话号码
-func (m *Message) SetTel(tel string) *Message {
+// tel: 接收方电话号码
+func (m *message) SetTel(tel string) *message {
 	m.Tel = tel
 	return m
 }
 
 // SetTemplateCode 设置短信模板编号
-// code:           短信模板编号，可在短信服务获取
-func (m *Message) SetTemplateCode(code string) *Message {
+// code: 短信模板编号，可在短信服务获取
+func (m *message) SetTemplateCode(code string) *message {
 	m.TemplateCode = code
 	return m
 }
 
 // SetContent 设置短信发送信息模板
-// content:   短信内容，支持任意对象，但是必须可json序列化，否则发送时报错
-func (m *Message) SetContent(content interface{}) (*Message, error) {
+// content: 短信内容，支持任意对象，但是必须可json序列化，否则发送时报错
+func (m *message) SetContent(content interface{}) (*message, error) {
 	data, err := json.Marshal(content)
 	if err != nil {
 		return nil, err
 	}
 	m.content = content
 	m.Param = string(data)
-
 	return m, nil
 }
